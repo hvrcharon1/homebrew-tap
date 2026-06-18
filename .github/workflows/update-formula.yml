@@ -1,0 +1,78 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [update-formula]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update formula
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          set -e
+          BASE_URL="https://github.com/hvrcharon1/agentdb/releases/download/v${VERSION}"
+
+          curl -sL "${BASE_URL}/checksums-sha256.txt" -o checksums.txt
+          cat checksums.txt
+
+          SHA_MACOS_ARM=$(grep 'aarch64-apple-darwin' checksums.txt | awk '{print $1}')
+          SHA_MACOS_X86=$(grep 'x86_64-apple-darwin' checksums.txt | awk '{print $1}')
+          SHA_LINUX_ARM=$(grep 'aarch64-unknown-linux-gnu' checksums.txt | awk '{print $1}')
+          SHA_LINUX_X86=$(grep 'x86_64-unknown-linux-gnu' checksums.txt | awk '{print $1}')
+
+          cat > Formula/agentdb.rb << FORMULA
+          class Agentdb < Formula
+            desc "Single-file embedded database for AI agents — SQL + Vector Search + FTS + Graphs"
+            homepage "https://github.com/hvrcharon1/agentdb"
+            version "${VERSION}"
+            license "Unlicense"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "${BASE_URL}/agentdb-aarch64-apple-darwin.tar.gz"
+                sha256 "${SHA_MACOS_ARM}"
+              else
+                url "${BASE_URL}/agentdb-x86_64-apple-darwin.tar.gz"
+                sha256 "${SHA_MACOS_X86}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.arm?
+                url "${BASE_URL}/agentdb-aarch64-unknown-linux-gnu.tar.gz"
+                sha256 "${SHA_LINUX_ARM}"
+              else
+                url "${BASE_URL}/agentdb-x86_64-unknown-linux-gnu.tar.gz"
+                sha256 "${SHA_LINUX_X86}"
+              end
+            end
+
+            def install
+              bin.install "agentdb"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/agentdb --version")
+            end
+          end
+          FORMULA
+
+          sed -i 's/^          //' Formula/agentdb.rb
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/agentdb.rb
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update agentdb to v${VERSION}"
+          git push
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
