@@ -1,26 +1,26 @@
 class Agentdb < Formula
   desc "Single-file embedded database for AI agents — SQL + Vector Search + FTS + Graphs"
   homepage "https://github.com/hvrcharon1/agentdb"
-  version "0.5.0"
+  version "0.5.3"
   license "Unlicense"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.0/agentdb-aarch64-apple-darwin.tar.gz"
-      sha256 "37cabc1ba9fdccb43c8427a7dab8c7e3f8ea623ff206ed75d61e2d647bc53674"
+      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.3/agentdb-aarch64-apple-darwin.tar.gz"
+      sha256 "b2ed13313c9522f58c17222a16013d2dca154bde0df62b1cf4251cadea3070f3"
     else
-      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.0/agentdb-x86_64-apple-darwin.tar.gz"
-      sha256 "84aa2420ea7115c2b11c4e06cf679def2a5885ec3e594dd3fce8b201f0475b33"
+      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.3/agentdb-x86_64-apple-darwin.tar.gz"
+      sha256 "f90fbcc6cbfc355697ab59374a4cfc8e9fe1b4239f92a643ad4822229697e3b6"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.0/agentdb-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "ab2c4ba78f309402033f680b97a95f085a83f75fab79cbb136cfcd03803148bd"
+      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.3/agentdb-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "09083d2d34596c27767f6fd810f7471e0ba010ffd9416b19ce0bbd53b189676d"
     else
-      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.0/agentdb-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "21fb26f68d9fc686534eac267fc1d8f5789f7d85d1428af8c3702d0b5e34f6a6"
+      url "https://github.com/hvrcharon1/agentdb/releases/download/v0.5.3/agentdb-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "4953ee6a101e815cc582710bb393a0c6cbdb984e7bb805bda7b7c4abb6e71b65"
     end
   end
 
